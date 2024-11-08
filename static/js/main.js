@@ -91,22 +91,25 @@ $(function () {
         parameter.name = name;
       }
 
-      var url = "/save_data/";
       $.ajax({
-        url: url,
+        url: "/save_data/",
         type: "POST",
         data: parameter,
-      }).then(
-        function (msg) {
+        headers: {
+          "X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val(),
+        },
+        success: function (msg) {
           console.log("Django 通信成功：" + msg);
           alert("保存に成功しました");
-          clearAll();
+          window.location.href = "/";
         },
-        function (error, error2) {
-          console.log("Django 通信エラー ： " + error);
+        error: function (error) {
+          console.log(
+            "Django 通信エラー：" + JSON.stringify(error.responseJSON)
+          );
           alert("保存時にエラーが発生しました");
-        }
-      );
+        },
+      });
     });
   }
 
